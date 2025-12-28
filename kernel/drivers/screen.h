@@ -15,26 +15,20 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <stddef.h>
-#include "includes/limine.h"
-#include "drivers/screen.h"
+#ifndef SCREEN_H
+#define SCREEN_H
 
-static volatile struct limine_framebuffer_request framebuffer_request = {
-    .id = LIMINE_FRAMEBUFFER_REQUEST,
-    .revision = 0
-};
+#include <stdint.h>
+#include "../includes/limine.h"
 
-void kmain(void) {
-    if (framebuffer_request.response == NULL || framebuffer_request.response->framebuffer_count < 1) {
-        while(1) { __asm__("hlt"); }
-    }
+typedef struct {
+    uint8_t magic[2];
+    uint8_t mode;
+    uint8_t charsize;
+} psf1_header_t;
 
-    struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
-    
-    screen_init(fb);
-    clean(0x000000);
+void screen_init(struct limine_framebuffer *fb);
+void kprint(const char *str, uint32_t color);
+void clean(uint32_t color);
 
-    kprint("Lumie OS 26.1-alpha\n", 0xFFFFFF);
-
-    while(1) { __asm__("hlt"); }
-}
+#endif
