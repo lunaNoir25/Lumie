@@ -15,33 +15,15 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <stddef.h>
-#include "includes/limine.h"
-#include "drivers/screen.h"
-#include "drivers/keyboard.h"
+#ifndef KEYBOARD_H
+#define KEYBOARD_H
 
-static volatile struct limine_framebuffer_request framebuffer_request = {
-    .id = LIMINE_FRAMEBUFFER_REQUEST,
-    .revision = 0
-};
+#include <stdint.h>
 
-void kmain(void) {
-    if (framebuffer_request.response == NULL || framebuffer_request.response->framebuffer_count < 1) {
-        while(1) { __asm__("hlt"); }
-    }
+extern char en_us[128];
+// extern char fr_ca[128];
 
-    struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
-    
-    screen_init(fb);
-    clean(0x000000);
+void keyboard_init(char* layout);
+void keyboard_handler();
 
-    keyboard_init(en_us);
-
-    kprint("Lumie 26.1-alpha\n", 0xFFFFFF);
-    kprint("> ", 0xFFFFFF);
-
-    while(1) {
-        keyboard_handler();
-        __asm__("pause");
-    }
-}
+#endif
