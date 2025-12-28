@@ -44,13 +44,49 @@ void put_char(char c, int cx, int cy, uint32_t fg) {
 
 void kprint(const char *str, uint32_t color) {
     for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == '\b') {
+            backspace();
+            continue;
+        }
+
+
         if (str[i] == '\n') {
             cursor_x = 0;
             cursor_y += 16;
             continue;
         }
-        put_char(str[i], cursor_x * 8, cursor_y, color);
-        cursor_x++;
+
+        if (cursor_x * 8 >= target_fb->width) {
+            cursor_x = 0;
+            cursor_y += 16;
+        }
+        
+        if (cursor_y + 16 <= target_fb->height) {
+            put_char(str[i], cursor_x * 8, cursor_y, color);
+            cursor_x++;
+        }
+    }
+}
+
+void backspace() {
+    if (cursor_x == 0 && cursor_y == 0) return;
+
+    if (cursor_x > 0) {
+        cursor_x--;
+    } else {
+        return;
+    }
+
+    uint32_t *fb_ptr = (uint32_t *)target_fb->address;
+    for (int y = 0; y < 16; y++) {
+        for (int x = 0; x < 8; x++) {
+            int row = cursor_y + y;
+            int col = (cursor_x * 8) + x;
+
+            if (row < target_fb->height && col < target_fb->width) {
+                fb_ptr[(cursor_y + y) * (target_fb->pitch / 4) + (cursor_x * 8 + x)] = 0x000000;
+            }
+        }
     }
 }
 
