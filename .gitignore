@@ -1,8 +1,6 @@
 /.vscode
 /isodir
-boot.o
-font.o
-kernel.o
+*.o
 lumie.bin
 lumie.iso
 OVMF_VARS.fd
