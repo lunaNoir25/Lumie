@@ -15,16 +15,31 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
+#include "string.h"
+#include <stddef.h>
 
-#include <stdint.h>
+int strcmp(const char *s1, const char *s2) {
+    while (*s1 && (*s1 == *s2)) {
+        s1++;
+        s2++;
+    }
 
-extern char en_us[128];
-// extern char fr_ca[128];
+    return *(const unsigned char*)s1 - *(const unsigned char*)s2;
+}
 
-void keyboard_init(char* layout);
-char get_last_char();
-void keyboard_handler();
+size_t strlen(const char *s) {
+    size_t len = 0;
+    while (s[len]) {
+        len++;
+    }
+    return len;
+}
 
-#endif
+void strcpy(char *dest, const char *src) {
+    size_t i = 0;
+    while (src[i] != '\0') {
+        dest[i] = src[i];
+        i++;
+    }
+    dest[i] = '\0';
+}

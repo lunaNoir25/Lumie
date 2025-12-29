@@ -90,7 +90,7 @@ void backspace() {
     }
 }
 
-void clean(uint32_t color) {
+void clear(uint32_t color) {
     uint32_t *fb_ptr = (uint32_t *)target_fb->address;
     for (size_t i = 0; i < target_fb->width * target_fb->height; i++) {
         fb_ptr[i] = color;

@@ -30,6 +30,6 @@ typedef struct {
 void screen_init(struct limine_framebuffer *fb);
 void kprint(const char *str, uint32_t color);
 void backspace();
-void clean(uint32_t color);
+void clear(uint32_t color);
 
 #endif

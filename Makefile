@@ -1,16 +1,17 @@
 OS := lumie
 KERNEL := $(OS).bin
 ISO := $(OS).iso
+INITRD := initramfs.tar
 
 CC := x86_64-elf-gcc
 ASM := nasm
 LD := x86_64-elf-gcc
 
-CFLAGS := -ffreestanding -O2 -Wall -Wextra -std=gnu11 -m64 -mno-red-zone -mcmodel=kernel -Ikernel -Ikernel/includes
+CFLAGS := -ffreestanding -O2 -Wall -Wextra -std=gnu11 -m64 -mno-red-zone -mcmodel=kernel -Ikernel -Ikernel/includes -Ikernel/drivers -Ikernel/lib
 ASMFLAGS := -f elf64
 LDFLAGS := -T kernel/linker.ld -ffreestanding -O2 -nostdlib -z max-page-size=0x1000 -Wl,--no-warn-rwx-segments
 
-OBJS := boot.o kernel.o screen.o font.o keyboard.o
+OBJS := boot.o kernel.o screen.o keyboard.o tar.o string.o input.o font.o
 
 .PHONY: all clean run iso
 
@@ -31,14 +32,27 @@ screen.o: kernel/drivers/screen.c
 keyboard.o: kernel/drivers/keyboard.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+tar.o: kernel/drivers/tar.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+string.o: kernel/lib/string.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+input.o: kernel/lib/input.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
 font.o: font.psf
 	objcopy -I binary -O elf64-x86-64 -B i386 --rename-section .data=.font font.psf font.o
 
-iso: $(KERNEL)
+$(INITRD):
+	tar -cvf $(INITRD) -C initramfs .
+
+iso: $(KERNEL) $(INITRD)
 	rm -rf isodir
 	mkdir -p isodir/boot/limine
 	mkdir -p isodir/EFI/BOOT
 	cp $(KERNEL) isodir/boot/lumie.bin
+	cp $(INITRD) isodir/boot/
 	cp kernel/limine.conf isodir/boot/limine/
 	cp /usr/share/limine/limine-bios.sys isodir/boot/limine/
 	cp /usr/share/limine/limine-bios-cd.bin isodir/boot/limine/
@@ -60,4 +74,4 @@ run: iso
 		-drive if=pflash,format=raw,unit=1,file=./OVMF_VARS.fd
 
 clean:
-	rm -rf *.o $(KERNEL) $(ISO) isodir OVMF_VARS.fd
+	rm -rf *.o $(KERNEL) $(ISO) $(INITRD) isodir OVMF_VARS.fd

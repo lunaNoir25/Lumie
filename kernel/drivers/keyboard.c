@@ -17,7 +17,6 @@
 
 #include "keyboard.h"
 #include "io.h"
-#include "screen.h"
 
 static char* current_layout;
 
@@ -33,6 +32,14 @@ void keyboard_init(char* layout) {
     current_layout = layout;
 }
 
+static char last_char = '\0';
+
+char get_last_char() {
+    char c = last_char;
+    last_char = '\0';
+    return c;
+}
+
 void keyboard_handler() {
     if (!(inb(0x64) & 1)) return;
     uint8_t scancode = inb(0x60);
@@ -40,8 +47,7 @@ void keyboard_handler() {
     if (scancode < 128) {
         char c = current_layout[scancode];
         if (c != 0) {
-            char str[2] = {c, '\0'};
-            kprint(str, 0xFFFFFF);
+            last_char = c;
         }
     }
 }

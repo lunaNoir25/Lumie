@@ -15,16 +15,32 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
+#ifndef TAR_H
+#define TAR_H
 
 #include <stdint.h>
+#include <stddef.h>
 
-extern char en_us[128];
-// extern char fr_ca[128];
+typedef struct {
+    char name[100];
+    char mode[8];
+    char uid[8];
+    char gid[8];
+    char size[12];
+    char mtime[12];
+    char chksum[8];
+    char typeflag;
+    char linkname[100];
+    char magic[6];
+    char version[2];
+    char uname[32];
+    char gname[32];
+    char devmajor[8];
+    char devminor[8];
+    char prefix[155];
+} __attribute__((packed)) tar_header_t;
 
-void keyboard_init(char* layout);
-char get_last_char();
-void keyboard_handler();
+void tar_init(void* address);
+char* tar_get_file(const char* filename, size_t* out_size);
 
 #endif
