@@ -23,6 +23,20 @@ static struct limine_framebuffer *target_fb;
 static int cursor_x = 0;
 static int cursor_y = 0;
 
+void utoa_hex(uint64_t n, char* str) {
+    const char* hex_digits = "0123456789ABCDEF";
+    
+    str[0] = '0';
+    str[1] = 'x';
+
+    for (int i = 15; i >= 0; i--) {
+        str[i + 2] = hex_digits[n & 0xF];
+        n >>= 4;
+    }
+
+    str[18] = '\0';
+}
+
 void screen_init(struct limine_framebuffer *fb) {
     target_fb = fb;
 }
@@ -32,10 +46,13 @@ void put_char(uint8_t c, int cx, int cy, uint32_t fg) {
     uint8_t *glyph = (uint8_t *)_binary_font_psf_start + sizeof(psf1_header_t) + (c * font->charsize);
     uint32_t *fb_ptr = (uint32_t *)target_fb->address;
 
+    int pixels_drawn = 0;
+
     for (uint32_t y = 0; y < font->charsize; y++) {
         for (uint32_t x = 0; x < 8; x++) {
             if ((*glyph & (0x80 >> x)) > 0) {
                 fb_ptr[(cy + y) * (target_fb->pitch / 4) + (cx + x)] = fg;
+                pixels_drawn++;
             }
         }
         glyph++;
@@ -65,6 +82,29 @@ void kprint(const char *str, uint32_t color) {
             put_char(str[i], cursor_x * 8, cursor_y, color);
             cursor_x++;
         }
+    }
+}
+
+void kprint_char(char c, uint32_t color) {
+    if (c == '\b') {
+        backspace();
+        return;
+    }
+
+    if (c == '\n') {
+        cursor_x = 0;
+        cursor_y += 16;
+        return;
+    }
+
+    if (cursor_x * 8 >= target_fb->width) {
+        cursor_x = 0;
+        cursor_y += 16;
+    }
+
+    if (cursor_y + 16 <= target_fb->height) {
+        put_char((uint8_t)c, cursor_x * 8, cursor_y, color);
+        cursor_x++;
     }
 }
 

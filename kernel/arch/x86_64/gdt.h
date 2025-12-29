@@ -15,17 +15,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
+#ifndef GDT_H
+#define GDT_H
 
 #include <stdint.h>
 
-extern char en_us[128];
-extern char fr_ca[128];
+void gdt_init(void);
 
-void keyboard_init(char* layout);
-char get_last_char();
-void keyboard_handler();
-char keyboard_get_char();
+extern void gdt_load(void* gdt_ptr);
 
 #endif

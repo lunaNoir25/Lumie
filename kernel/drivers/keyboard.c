@@ -17,6 +17,7 @@
 
 #include "keyboard.h"
 #include "io.h"
+#include "screen.h"
 
 static char* current_layout;
 
@@ -38,6 +39,20 @@ char fr_ca[128] = {
 
 void keyboard_init(char* layout) {
     current_layout = layout;
+
+    while (inb(0x64) & 1) inb(0x60);
+
+    outb(0x64, 0xAE);
+
+    outb(0x64, 0x20);
+    while (!(inb(0x64) & 1));
+    uint8_t cb = inb(0x60);
+    cb |= 1;
+    cb &= ~0x10;
+    
+    outb(0x64, 0x60);
+    while (inb(0x64) & 2);
+    outb(0x60, cb);
 }
 
 static char last_char = '\0';
@@ -108,32 +123,44 @@ char apply_shift(char c) {
             case '\'': return '\"';
         }
         return c;
+    } else {
+        return c;
     }
 }
 
+char apply_layout(uint8_t scancode) {
+    char c = current_layout[scancode];
+
+    if (shift_active) {
+        return apply_shift(c);
+    }
+
+    return c;
+}
+
+static volatile char last_interrupt_char = '\0';
+
 void keyboard_handler() {
-    if (!(inb(0x64) & 1)) return;
     uint8_t scancode = inb(0x60);
 
     if (scancode == 0x2A || scancode == 0x36) {
         shift_active = 1;
         return;
     }
-    
+
     if (scancode == 0xAA || scancode == 0xB6) {
         shift_active = 0;
         return;
     }
 
-    if (scancode & 0x80) return;
-
-    if (scancode < 128) {
-        char c = current_layout[scancode];
-        if (c != 0) {
-            if (shift_active) {
-                c = apply_shift(c);
-            }
-            last_char = c;
-        }
+    if (scancode < 0x80) {
+        last_interrupt_char = apply_layout(scancode);
     }
+}
+
+
+char keyboard_get_char() {
+    char c = last_interrupt_char;
+    last_interrupt_char = '\0';
+    return c;
 }

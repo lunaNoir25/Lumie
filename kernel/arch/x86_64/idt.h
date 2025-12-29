@@ -15,17 +15,22 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef KEYBOARD_H
-#define KEYBOARD_H
+#ifndef IDT_H
+#define IDT_H
 
 #include <stdint.h>
 
-extern char en_us[128];
-extern char fr_ca[128];
+struct interrupt_frame {
+    uint64_t r15, r14, r13, r12, r11, r10, r9, r8;
+    uint64_t rdi, rsi, rdx, rcx, rbx, rax;
+    uint64_t rbp;
+    uint64_t vector;
+    uint64_t error_code;
+    uint64_t rip, cs, rflags, rsp, ss;
+};
 
-void keyboard_init(char* layout);
-char get_last_char();
-void keyboard_handler();
-char keyboard_get_char();
+void idt_init(void);
+void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags);
+void interrupt_handler(struct interrupt_frame* frame);
 
 #endif

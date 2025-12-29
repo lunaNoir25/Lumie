@@ -24,6 +24,11 @@
 #include "lib/string.h"
 #include "shell.h"
 
+#if __x86_64__
+#include "arch/x86_64/gdt.h"
+#include "arch/x86_64/idt.h"
+#endif
+
 static volatile struct limine_module_request module_request = {
     .id = LIMINE_MODULE_REQUEST,
     .revision = 0
@@ -44,7 +49,9 @@ void kmain(void) {
     screen_init(fb);
     clear(0x000000);
 
-    keyboard_init(en_us);
+    gdt_init();
+
+    idt_init();
 
     if (module_request.response != NULL && module_request.response->module_count > 0) {
         struct limine_file *init_file = module_request.response->modules[0];
@@ -57,9 +64,15 @@ void kmain(void) {
         }
     }
 
+    keyboard_init(en_us);
+
+    __asm__ volatile ("sti");
+    kprint("Interrupts enabled.\n", 0x00FF00);
+
+
     char input_buffer[128];
 
-    kprint("Lumie 26.1-alpha\n", 0xFFFFFF);
+    kprint("\nLumie 26.1-alpha\n\n", 0xFFFFFF);
 
     kernel_shell();
 }

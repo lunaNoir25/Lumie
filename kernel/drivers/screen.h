@@ -27,8 +27,10 @@ typedef struct {
     uint8_t charsize;
 } psf1_header_t;
 
+void utoa_hex(uint64_t n, char* str);
 void screen_init(struct limine_framebuffer *fb);
 void kprint(const char *str, uint32_t color);
+void kprint_char(char c, uint32_t color);
 void backspace();
 void clear(uint32_t color);
 

@@ -7,11 +7,24 @@ CC := x86_64-elf-gcc
 ASM := nasm
 LD := x86_64-elf-gcc
 
-CFLAGS := -ffreestanding -O2 -Wall -Wextra -std=gnu11 -m64 -mno-red-zone -mcmodel=kernel -Ikernel -Ikernel/includes -Ikernel/drivers -Ikernel/lib
+CFLAGS := -ffreestanding -O2 -Wall -Wextra -std=gnu11 -m64 -mno-red-zone -mcmodel=kernel \
+          -Ikernel -Ikernel/includes -Ikernel/drivers -Ikernel/lib -Ikernel/arch/x86_64
 ASMFLAGS := -f elf64
 LDFLAGS := -T kernel/linker.ld -ffreestanding -O2 -nostdlib -z max-page-size=0x1000 -Wl,--no-warn-rwx-segments
 
-OBJS := boot.o kernel.o screen.o keyboard.o tar.o string.o input.o shell.o font.o
+OBJS := kernel/arch/x86_64/boot.o \
+        kernel/arch/x86_64/gdt.o \
+        kernel/arch/x86_64/gdt_flush.o \
+        kernel/arch/x86_64/idt.o \
+        kernel/arch/x86_64/interrupts.o \
+        kernel/kernel.o \
+        kernel/shell.o \
+        kernel/drivers/screen.o \
+        kernel/drivers/keyboard.o \
+        kernel/drivers/tar.o \
+        kernel/lib/string.o \
+        kernel/lib/input.o \
+        font.o
 
 .PHONY: all clean run iso
 
@@ -20,29 +33,11 @@ all: $(KERNEL)
 $(KERNEL): $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(OBJS)
 
-boot.o: kernel/arch/x86_64/boot.s
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.s
 	$(ASM) $(ASMFLAGS) $< -o $@
-
-kernel.o: kernel/kernel.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-shell.o: kernel/shell.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-screen.o: kernel/drivers/screen.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-keyboard.o: kernel/drivers/keyboard.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-tar.o: kernel/drivers/tar.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-string.o: kernel/lib/string.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-input.o: kernel/lib/input.c
-	$(CC) $(CFLAGS) -c $< -o $@
 
 font.o: font.psf
 	objcopy -I binary -O elf64-x86-64 -B i386 --rename-section .data=.font font.psf font.o
@@ -77,4 +72,4 @@ run: iso
 		-drive if=pflash,format=raw,unit=1,file=./OVMF_VARS.fd
 
 clean:
-	rm -rf *.o $(KERNEL) $(ISO) $(INITRD) isodir OVMF_VARS.fd
+	rm -rf $(OBJS) $(KERNEL) $(ISO) $(INITRD) isodir OVMF_VARS.fd
