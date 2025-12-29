@@ -59,6 +59,18 @@ void put_char(uint8_t c, int cx, int cy, uint32_t fg) {
     }
 }
 
+void draw_rect(int x, int y, int width, int height, uint32_t color) {
+    uint32_t *fb_ptr = (uint32_t *)target_fb->address;
+    for (int i = y; i < y + height; i++) {
+        for (int j = x; j < x + width; j++) {
+            // Check bounds to prevent memory corruption
+            if (j >= 0 && j < target_fb->width && i >= 0 && i < target_fb->height) {
+                fb_ptr[i * (target_fb->pitch / 4) + j] = color;
+            }
+        }
+    }
+}
+
 void kprint(const char *str, uint32_t color) {
     for (int i = 0; str[i] != '\0'; i++) {
         if (str[i] == '\b') {
@@ -105,6 +117,19 @@ void kprint_char(char c, uint32_t color) {
     if (cursor_y + 16 <= target_fb->height) {
         put_char((uint8_t)c, cursor_x * 8, cursor_y, color);
         cursor_x++;
+    }
+}
+
+void kprint_at(const char* str, uint32_t color, int x, int y) {
+    if (!target_fb) return;
+
+    for (int i = 0; str[i] != '\0'; i++) {
+        int screen_x = (x + i) * 8;
+        int screen_y = y * 16;
+
+        if (screen_x + 8 <= target_fb->width && screen_y + 16 <= target_fb->height) {
+            put_char((uint8_t)str[i], screen_x, screen_y, color);
+        }
     }
 }
 

@@ -21,6 +21,7 @@ OBJS := kernel/arch/x86_64/boot.o \
         kernel/shell.o \
         kernel/drivers/screen.o \
         kernel/drivers/keyboard.o \
+		kernel/drivers/power.o \
         kernel/drivers/tar.o \
         kernel/lib/string.o \
         kernel/lib/input.o \

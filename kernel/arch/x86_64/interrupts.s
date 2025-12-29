@@ -76,7 +76,9 @@ isr_common:
 
 isr_no_err 0
 isr_no_err 1
+isr_no_err 6
 isr_err    8
+isr_err    13
 isr_err    14
 isr_no_err 32
 isr_no_err 33

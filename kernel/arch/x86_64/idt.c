@@ -23,6 +23,17 @@
 
 extern void load_idt(void* idtr);
 
+const char* exception_message[] = {
+    "Division By Zero", "Debug", "Non Maskable Interrupt", "Breakpoint",
+    "Into Detected Overflow", "Out Of Bounds", "Invalid Opcode", "No coprecessor",
+    "Double Fault", "Coprocessor Segment Overrun", "Bad TSS", "Segment Not Present",
+    "Stack Fault", "General Protection Fault", "Page Fault", "Unknown Interrupt",
+    "x87 FPU Error", "Alignment Check", "Machine Check", "SIMD Floating-Point",
+    "Virtualization", "Control Protection", "Reserved", "Reserved",
+    "Reserved", "Reserved", "Reserved", "Reserved",
+    "Hypervisor Injection", "VMM Communication", "Security Exception", "Reserved    "
+};
+
 struct idt_entry {
     uint16_t isr_low;
     uint16_t kernel_cs;
@@ -54,8 +65,30 @@ void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) {
     descriptor->reserved   = 0;
 }
 
+void rsod(struct interrupt_frame* frame) {
+    clear(0xFF0000);
+    draw_rect(240, 140, 740, 480, 0x000000); 
+
+    kprint_at("Lumie has crashed!", 0xFFFFFF, 32, 10);
+
+    if (frame->vector < 32) {
+        kprint_at(exception_message[frame->vector], 0xFFFFFF, 32, 12);
+    }
+
+    char buf[20];
+    utoa_hex(frame->rip, buf);
+    kprint_at("RIP: ", 0xFFFFFF, 32, 16);
+    kprint_at(buf, 0xFFFFFF, 37, 16);
+
+    while(1) { __asm__("cli; hlt"); }
+}
+
 void interrupt_handler(struct interrupt_frame* frame) {
     uint64_t vector = frame->vector;
+
+    if (vector < 32) {
+        rsod(frame);
+    }
 
     if (vector == 33) {
         keyboard_handler();
@@ -100,7 +133,9 @@ void idt_init() {
 
     extern void isr0();
     extern void isr1();
+    extern void isr6();
     extern void isr8();
+    extern void isr13();
     extern void isr14();
     extern void isr32();
     extern void isr33();
@@ -109,6 +144,7 @@ void idt_init() {
     idt_set_descriptor(0, isr0, 0x8E);
     idt_set_descriptor(1, isr1, 0x8E);
     idt_set_descriptor(8, isr8, 0x8E);
+    idt_set_descriptor(13, isr13, 0x8E);
     idt_set_descriptor(14, isr14, 0x8E);
     idt_set_descriptor(32, isr32, 0x8E);
     idt_set_descriptor(33, isr33, 0x8E);

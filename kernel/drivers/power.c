@@ -12,28 +12,17 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef SCREEN_H
-#define SCREEN_H
-
+#include "power.h"
+#include "screen.h"
+#include "io.h"
 #include <stdint.h>
-#include "../includes/limine.h"
 
-typedef struct {
-    uint8_t magic[2];
-    uint8_t mode;
-    uint8_t charsize;
-} psf1_header_t;
-
-void utoa_hex(uint64_t n, char* str);
-void screen_init(struct limine_framebuffer *fb);
-void draw_rect(int x, int y, int width, int height, uint32_t color);
-void kprint(const char *str, uint32_t color);
-void kprint_char(char c, uint32_t color);
-void kprint_at(const char* str, uint32_t color, int x, int y);
-void backspace();
-void clear(uint32_t color);
-
-#endif
+void reboot() {
+    uint8_t good = 0x02;
+    while (good & 0x02)
+        good = inb(0x64);
+    outb(0x64, 0xFE);
+    while(1) { __asm__("hlt"); }
+}
