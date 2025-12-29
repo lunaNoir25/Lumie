@@ -11,7 +11,7 @@ CFLAGS := -ffreestanding -O2 -Wall -Wextra -std=gnu11 -m64 -mno-red-zone -mcmode
 ASMFLAGS := -f elf64
 LDFLAGS := -T kernel/linker.ld -ffreestanding -O2 -nostdlib -z max-page-size=0x1000 -Wl,--no-warn-rwx-segments
 
-OBJS := boot.o kernel.o screen.o keyboard.o tar.o string.o input.o font.o
+OBJS := boot.o kernel.o screen.o keyboard.o tar.o string.o input.o shell.o font.o
 
 .PHONY: all clean run iso
 
@@ -24,6 +24,9 @@ boot.o: kernel/arch/x86_64/boot.s
 	$(ASM) $(ASMFLAGS) $< -o $@
 
 kernel.o: kernel/kernel.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+shell.o: kernel/shell.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 screen.o: kernel/drivers/screen.c

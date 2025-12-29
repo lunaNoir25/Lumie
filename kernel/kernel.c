@@ -22,6 +22,7 @@
 #include "drivers/keyboard.h"
 #include "lib/input.h"
 #include "lib/string.h"
+#include "shell.h"
 
 static volatile struct limine_module_request module_request = {
     .id = LIMINE_MODULE_REQUEST,
@@ -60,27 +61,5 @@ void kmain(void) {
 
     kprint("Lumie 26.1-alpha\n", 0xFFFFFF);
 
-    while(1) {
-        kprint("> ", 0xFFFFFF);
-
-        readline(input_buffer, 128);
-
-        if (strcmp(input_buffer, "clear") == 0) {
-            clear(0x000000);
-        } else if (strcmp(input_buffer, "cat motd.txt") == 0) {
-            size_t size;
-            char* file = tar_get_file("motd.txt", &size);
-            if (file) {
-                for(size_t i=0; i < size; i++) {
-                    char s[2] = {file[i], '\0'};
-                    kprint(s, 0x00FF00);
-                }
-                kprint("\n", 0xFFFFFF);
-            }
-        } else if (strlen(input_buffer) > 0) {
-            kprint("Kernel command \"", 0xFF0000);
-            kprint(input_buffer, 0xFF0000);
-            kprint("\" does not exist.\n", 0xFF0000);
-        }
-    }
+    kernel_shell();
 }
