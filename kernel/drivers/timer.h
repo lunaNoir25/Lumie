@@ -15,15 +15,15 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef STRING_H
-#define STRING_H
-
-#include <stddef.h>
 #include <stdint.h>
 
-int strcmp(const char *s1, const char *s2);
-size_t strlen(const char *s);
-void strcpy(char *dest, const char *src);
-char* uint_to_string(uint64_t n);
+#ifndef TIMER_H
+#define TIMER_H
+
+void timer_init(uint32_t frequency);
+void timer_handler();
+uint64_t get_uptime();
+void sleep(uint64_t ms);
+void safe_sleep(uint32_t ms);
 
 #endif

@@ -17,6 +17,7 @@
 
 #include "string.h"
 #include <stddef.h>
+#include <stdint.h>
 
 int strcmp(const char *s1, const char *s2) {
     while (*s1 && (*s1 == *s2)) {
@@ -42,4 +43,22 @@ void strcpy(char *dest, const char *src) {
         i++;
     }
     dest[i] = '\0';
+}
+
+static char uint_buf[32];
+
+char* uint_to_string(uint64_t n) {
+    int i = 30;
+    uint_buf[31] = '\0';
+
+    if (n == 0) {
+        uint_buf[i--] = '0';
+    } else {
+        while (n > 0 && i > 0) {
+            uint_buf[i--] = (n % 10) + '0';
+            n /= 10;
+        }
+    }
+
+    return &uint_buf[i + 1];
 }

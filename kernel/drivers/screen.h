@@ -32,7 +32,7 @@ void screen_init(struct limine_framebuffer *fb);
 void draw_rect(int x, int y, int width, int height, uint32_t color);
 void kprint(const char *str, uint32_t color);
 void kprint_char(char c, uint32_t color);
-void kprint_at(const char* str, uint32_t color, int x, int y);
+void kprint_at(const char* str, uint32_t fg, uint32_t bg, int x, int y);
 void backspace();
 void clear(uint32_t color);
 

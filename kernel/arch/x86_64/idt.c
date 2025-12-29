@@ -19,7 +19,10 @@
 #include "idt.h"
 #include "../../drivers/keyboard.h"
 #include "../../drivers/screen.h"
+#include "../../drivers/timer.h"
+#include "../../drivers/power.h"
 #include "../../drivers/io.h"
+#include "../../lib/string.h"
 
 extern void load_idt(void* idtr);
 
@@ -65,22 +68,39 @@ void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags) {
     descriptor->reserved   = 0;
 }
 
+uint64_t wait_secs = 0;
+
 void rsod(struct interrupt_frame* frame) {
     clear(0xFF0000);
     draw_rect(240, 140, 740, 480, 0x000000); 
 
-    kprint_at("Lumie has crashed!", 0xFFFFFF, 32, 10);
+    kprint_at("Lumie has crashed!", 0xFFFFFF, 0x000000, 32, 10);
 
     if (frame->vector < 32) {
-        kprint_at(exception_message[frame->vector], 0xFFFFFF, 32, 12);
+        kprint_at(exception_message[frame->vector], 0xFFFFFF, 0x000000, 32, 12);
     }
 
     char buf[20];
     utoa_hex(frame->rip, buf);
-    kprint_at("RIP: ", 0xFFFFFF, 32, 16);
-    kprint_at(buf, 0xFFFFFF, 37, 16);
+    kprint_at("RIP: ", 0xFFFFFF, 0x000000, 32, 20);
+    kprint_at(buf, 0xFFFFFF, 0x000000, 37, 20);
 
-    while(1) { __asm__("cli; hlt"); }
+
+    wait_secs = 15;
+    while(1) {
+        kprint_at("Rebooting in ", 0xFFFFFF, 0x000000, 32, 16);
+        kprint_at(uint_to_string(wait_secs), 0xFFFFFF, 0x000000, 45, 16);
+        if (wait_secs <= 9) {
+            kprint_at(" ", 0x000000, 0x000000, 46, 16);
+        }
+
+        safe_sleep(1000);
+        wait_secs--;
+
+        if (wait_secs <= 0) {
+            reboot();
+        }
+    }
 }
 
 void interrupt_handler(struct interrupt_frame* frame) {
@@ -92,7 +112,9 @@ void interrupt_handler(struct interrupt_frame* frame) {
 
     if (vector == 33) {
         keyboard_handler();
-    } else if (vector == 32) {} else {}
+    } else if (vector == 32) {
+        timer_handler();
+    } else {}
 
     if (vector >= 32 && vector < 48) {
         if (vector >= 40) {

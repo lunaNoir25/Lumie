@@ -20,6 +20,7 @@
 #include "includes/limine.h"
 #include "drivers/screen.h"
 #include "drivers/keyboard.h"
+#include "drivers/timer.h"
 #include "lib/input.h"
 #include "lib/string.h"
 #include "shell.h"
@@ -45,6 +46,8 @@ void kmain(void) {
     }
 
     struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
+
+    timer_init(100);
     
     screen_init(fb);
     clear(0x000000);
@@ -72,7 +75,7 @@ void kmain(void) {
 
     char input_buffer[128];
 
-    kprint("\nLumie 26.1-alpha\n\n", 0xFFFFFF);
+    kprint("\nLumie v26.1-alpha\n\n", 0xFFFFFF);
 
     kernel_shell();
 }

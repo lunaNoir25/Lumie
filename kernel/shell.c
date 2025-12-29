@@ -19,6 +19,7 @@
 #include "drivers/keyboard.h"
 #include "drivers/screen.h"
 #include "drivers/power.h"
+#include "drivers/timer.h"
 #include "drivers/tar.h"
 #include "lib/string.h"
 #include "lib/input.h"
@@ -37,6 +38,7 @@ void cmd_help(char* args){
     kprint("ls          List files in ramdisk.\n", 0xFFFFFF);
     kprint("cat         Read a file.\n", 0xFFFFFF);
     kprint("layout      List or change keyboard layout.\n", 0xFFFFFF);
+    kprint("uptime      Get system uptime in seconds.\n", 0xFFFFFF);
     kprint("reboot      Reboot.\n", 0xFFFFFF);
 }
 
@@ -79,6 +81,17 @@ void cmd_layout(char* args) {
     }
 }
 
+void cmd_uptime() {
+    uint64_t ticks = get_uptime();
+    uint64_t seconds = ticks / 100;
+    
+    kprint("Uptime: ", 0xFFFFFF);
+    kprint(uint_to_string(seconds), 0x00FF00);
+    kprint(" seconds (", 0xFFFFFF);
+    kprint(uint_to_string(ticks), 0x00FFFF);
+    kprint(" ticks)\n", 0xFFFFFF);
+}
+
 void cmd_reboot(char* args) {
     kprint("Rebooting...\n", 0xFFFFFF);
 
@@ -91,7 +104,8 @@ command_t commands[] = {
     {"ls", cmd_ls},
     {"cat", cmd_cat},
     {"layout", cmd_layout},
-    {"reboot", cmd_reboot}
+    {"uptime", cmd_uptime},
+    {"reboot", cmd_reboot},
 };
 
 void kernel_shell() {
