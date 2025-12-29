@@ -21,7 +21,7 @@
 #include <stdint.h>
 
 extern char en_us[128];
-// extern char fr_ca[128];
+extern char fr_ca[128];
 
 void keyboard_init(char* layout);
 char get_last_char();

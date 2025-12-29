@@ -27,9 +27,9 @@ void screen_init(struct limine_framebuffer *fb) {
     target_fb = fb;
 }
 
-void put_char(char c, int cx, int cy, uint32_t fg) {
+void put_char(uint8_t c, int cx, int cy, uint32_t fg) {
     psf1_header_t *font = (psf1_header_t *)_binary_font_psf_start;
-    uint8_t *glyph = (uint8_t *)_binary_font_psf_start + 4 + (c * font->charsize);
+    uint8_t *glyph = (uint8_t *)_binary_font_psf_start + sizeof(psf1_header_t) + (c * font->charsize);
     uint32_t *fb_ptr = (uint32_t *)target_fb->address;
 
     for (uint32_t y = 0; y < font->charsize; y++) {
