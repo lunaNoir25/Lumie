@@ -15,4 +15,4 @@ A simple, very early operating system built with the Limine Protocol.
 ## Third-Party Assets
 
 - The default font is Spleen 8x16 by Frederic Cambus under the BSD 2-Clause License. <https://github.com/fcambus/spleen>
-- Lumie utilizes the Limine Bootloader and follows the Limine Protocol by Mintsuki for kernel initialization and booting under the BSD 2-Clause License. <https://codeberg.org/Limine/Limine>
+- Lumie utilizes the Limine Bootloader and follows the Limine Protocol for kernel initialization and booting under the BSD 2-Clause License. Limine is made by Mintsuki. <https://codeberg.org/Limine/Limine>
