@@ -15,7 +15,6 @@
 */
 
 #include "power.h"
-#include "screen.h"
 #include "io.h"
 #include <stdint.h>
 

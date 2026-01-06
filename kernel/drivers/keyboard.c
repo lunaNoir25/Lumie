@@ -17,7 +17,6 @@
 
 #include "keyboard.h"
 #include "io.h"
-#include "screen.h"
 
 static char* current_layout;
 
