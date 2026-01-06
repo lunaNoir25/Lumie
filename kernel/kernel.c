@@ -21,8 +21,6 @@
 #include "drivers/screen.h"
 #include "drivers/keyboard.h"
 #include "drivers/timer.h"
-#include "lib/input.h"
-#include "lib/string.h"
 #include "shell.h"
 
 #if __x86_64__
