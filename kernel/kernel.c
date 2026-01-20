@@ -17,6 +17,7 @@
 
 #include <stddef.h>
 #include "drivers/tar.h"
+#include "drivers/fat.h"
 #include "includes/limine.h"
 #include "drivers/screen.h"
 #include "drivers/keyboard.h"
@@ -53,6 +54,8 @@ void kmain(void) {
     gdt_init();
 
     idt_init();
+
+    fat_init();
 
     if (module_request.response != NULL && module_request.response->module_count > 0) {
         struct limine_file *init_file = module_request.response->modules[0];

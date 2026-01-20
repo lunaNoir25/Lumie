@@ -24,6 +24,8 @@ OBJS := kernel/arch/x86_64/boot.o \
 		kernel/drivers/power.o \
 		kernel/drivers/timer.o \
         kernel/drivers/tar.o \
+		kernel/drivers/ata.o \
+		kernel/drivers/fat.o \
         kernel/lib/string.o \
         kernel/lib/input.o \
         font.o
@@ -71,7 +73,8 @@ run: iso
 	qemu-system-x86_64 -cdrom $(ISO) \
 		-m 256M \
 		-drive if=pflash,format=raw,unit=0,file=/usr/share/ovmf/x64/OVMF_CODE.4m.fd,readonly=on \
-		-drive if=pflash,format=raw,unit=1,file=./OVMF_VARS.fd
+		-drive if=pflash,format=raw,unit=1,file=./OVMF_VARS.fd \
+		-drive file=fat16_test.img,format=raw,index=0,media=disk
 
 clean:
 	rm -rf $(OBJS) $(KERNEL) $(ISO) $(INITRD) isodir OVMF_VARS.fd

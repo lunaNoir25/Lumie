@@ -34,4 +34,18 @@ static void inline io_wait() {
     outb(0x80, 0);
 }
 
+static inline void insw(uint16_t port, void *addr, uint32_t count) {
+    __asm__ volatile ("cld; rep insw" :
+                      "=D" (addr), "=c" (count) :
+                      "d" (port), "0" (addr), "1" (count) :
+                      "memory", "cc");
+}
+
+static inline void outsw(uint16_t port, const void *addr, uint32_t count) {
+    __asm__ volatile ("cld; rep outsw" :
+                      "=S" (addr), "=c" (count) :
+                      "d" (port), "0" (addr), "1" (count) :
+                      "memory", "cc");
+}
+
 #endif
