@@ -1,5 +1,6 @@
-# Lumie v26.1-alpha
+# The Luminous Operating System
 
+Lumie v26.1-alpha1
 Copyright (C) 2026 Luna Moonlit Noir <lunaNoir.sk@gmail.com>
 
 ## License

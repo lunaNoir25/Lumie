@@ -76,7 +76,7 @@ void kmain(void) {
 
     char input_buffer[128];
 
-    kprint("\nLumie v26.1-alpha\n\n", 0xFFFFFF);
+    kprint("\nLumie v26.1-alpha1\n\n", 0xFFFFFF);
 
     kernel_shell();
 }
