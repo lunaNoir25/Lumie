@@ -60,17 +60,6 @@ void gdt_init() {
     gdt_ptr.limit = (sizeof(struct gdt_entry) * 3) - 1;
     gdt_ptr.base = (uint64_t)&gdt;
 
-    char buf[20];
-    kprint("GDT base: ", 0x0000FF);
-    utoa_hex((uintptr_t)&gdt, buf);
-    kprint(buf, 0x0000FF);
-    kprint("\n", 0x0000FF);
-
-    kprint("GDT ptr base: ", 0x0000FF);
-    utoa_hex(gdt_ptr.base, buf);
-    kprint(buf, 0x0000FF);
-    kprint("\n", 0x0000FF);
-
     gdt_load(&gdt_ptr);
 
     kprint("GDT Loaded.\n", 0x00FF00);

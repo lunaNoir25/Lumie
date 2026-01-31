@@ -16,11 +16,11 @@
 */
 
 #include "shell.h"
+#include "drivers/fat.h"
 #include "drivers/keyboard.h"
 #include "drivers/screen.h"
 #include "drivers/power.h"
 #include "drivers/timer.h"
-#include "drivers/tar.h"
 #include "lib/string.h"
 #include "lib/input.h"
 
@@ -37,32 +37,48 @@ void cmd_help(char* args){
     kprint("clear       Clear the screen.\n", 0xFFFFFF);
     kprint("ls          List files in ramdisk.\n", 0xFFFFFF);
     kprint("cat         Read a file.\n", 0xFFFFFF);
+    kprint("cd          Change directory.", 0xFFFFFF);
     kprint("layout      List or change keyboard layout.\n", 0xFFFFFF);
     kprint("uptime      Get system uptime in seconds.\n", 0xFFFFFF);
     kprint("reboot      Reboot.\n", 0xFFFFFF);
 }
 
 void cmd_ls(char* args) {
-    tar_list_files();
+    kprint("A:\\\n", 0x00FFFF);
+    fat_list_files();
 }
 
 void cmd_cat(char* args) {
     if (strlen(args) == 0) {
-        kprint("Usage: ", 0xFF0000);
-        kprint("cat <filename>\n", 0xFFFFFF);
+        kprint("Usage: cat <filename.txt>\n", 0xFFFFFF);
         return;
     }
 
-    size_t size;
-    char* file = tar_get_file(args, &size);
-    if (file) {
-        for (size_t i = 0; i < size; i++) {
-            char s[2] = {file[i], '\0'};
+    char fat_name[11];
+    fat_format_name(args, fat_name);
+
+    uint32_t size;
+    uint16_t cluster = fat_find_file(fat_name, &size);
+    
+    if (cluster != 0) {
+        uint8_t buf[512];
+        fat_read_file(cluster, buf);
+
+        for (uint32_t i = 0; i < size; i++) {
+            char s[2] = {(char)buf[i], '\0'};
             kprint(s, 0x00FF00);
         }
         kprint("\n", 0xFFFFFF);
     } else {
-        kprint("Provided file not found.\n", 0xFFFFFF);
+        kprint("File not found on A: drive.\n", 0xFF0000);
+    }
+}
+
+void cmd_cd(char* args) {
+    if (strlen(args) == 0) {
+        kprint("A:\\\n", 0xFFFFFF);
+    } else {
+        kprint("Directory not found or subdirectories not supported yet.\n", 0xFF0000);
     }
 }
 
@@ -103,6 +119,7 @@ command_t commands[] = {
     {"help", cmd_help},
     {"ls", cmd_ls},
     {"cat", cmd_cat},
+    {"cd", cmd_cd},
     {"layout", cmd_layout},
     {"uptime", cmd_uptime},
     {"reboot", cmd_reboot},

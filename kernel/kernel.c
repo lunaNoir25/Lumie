@@ -60,12 +60,6 @@ void kmain(void) {
     if (module_request.response != NULL && module_request.response->module_count > 0) {
         struct limine_file *init_file = module_request.response->modules[0];
         tar_init(init_file->address);
-
-        size_t f_size;
-        char* motd = tar_get_file("motd.txt", &f_size);
-        if (motd) {
-            kprint("Found MOTD.\n", 0x0000FF);
-        }
     }
 
     keyboard_init(en_us);
@@ -73,10 +67,15 @@ void kmain(void) {
     __asm__ volatile ("sti");
     kprint("Interrupts enabled.\n", 0x00FF00);
 
-
-    char input_buffer[128];
-
-    kprint("\nLumie v26.1-alpha1\n\n", 0xFFFFFF);
+    size_t size;
+    char* file = tar_get_file("./motd.txt", &size);
+    if (file) {
+        for (size_t i = 0; i < size; i++) {
+            char s[2] = {file[i], '\0'};
+            kprint(s, 0xFF00FF);
+        }
+        kprint("\n", 0xFFFFFF);
+    }
 
     kernel_shell();
 }

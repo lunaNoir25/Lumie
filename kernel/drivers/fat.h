@@ -59,6 +59,11 @@ typedef struct {
     uint32_t file_size;
 } __attribute__((packed)) fat_dirent_t;
 
+void fat_format_name(const char* input, char* output);
+int fat_name_match(const uint8_t* fat_name, const char* search_name);
+void fat_list_files();
+uint16_t fat_find_file(const char* name, uint32_t* size_out);
+void fat_read_file(uint16_t cluster, uint8_t* target_buffer);
 void fat_init();
 
 #endif

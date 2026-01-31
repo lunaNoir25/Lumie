@@ -1,1 +1,2 @@
-Hello from Initram!
+
+Welcome to Lumie 0.1.0!
