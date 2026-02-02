@@ -40,7 +40,7 @@ void cmd_help(char* args){
     kprint("cd          Change directory.\n", 0xFFFFFF);
     kprint("layout      List or change keyboard layout.\n", 0xFFFFFF);
     kprint("uptime      Get system uptime in seconds.\n", 0xFFFFFF);
-    kprint("echo        Print arguments.\n");
+    kprint("echo        Print arguments.\n", 0xFFFFFF);
     kprint("reboot      Reboot.\n", 0xFFFFFF);
 }
 
