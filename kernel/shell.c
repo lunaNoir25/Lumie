@@ -37,9 +37,10 @@ void cmd_help(char* args){
     kprint("clear       Clear the screen.\n", 0xFFFFFF);
     kprint("ls          List files in ramdisk.\n", 0xFFFFFF);
     kprint("cat         Read a file.\n", 0xFFFFFF);
-    kprint("cd          Change directory.", 0xFFFFFF);
+    kprint("cd          Change directory.\n", 0xFFFFFF);
     kprint("layout      List or change keyboard layout.\n", 0xFFFFFF);
     kprint("uptime      Get system uptime in seconds.\n", 0xFFFFFF);
+    kprint("echo        Print arguments.\n");
     kprint("reboot      Reboot.\n", 0xFFFFFF);
 }
 
@@ -97,7 +98,7 @@ void cmd_layout(char* args) {
     }
 }
 
-void cmd_uptime() {
+void cmd_uptime(char* args) {
     uint64_t ticks = get_uptime();
     uint64_t seconds = ticks / 100;
     
@@ -106,6 +107,11 @@ void cmd_uptime() {
     kprint(" seconds (", 0xFFFFFF);
     kprint(uint_to_string(ticks), 0x00FFFF);
     kprint(" ticks)\n", 0xFFFFFF);
+}
+
+void cmd_echo(char* args) {
+    kprint(args, 0xFFFFFF);
+    kprint("\n", 0xFFFFFF);
 }
 
 void cmd_reboot(char* args) {
@@ -122,6 +128,7 @@ command_t commands[] = {
     {"cd", cmd_cd},
     {"layout", cmd_layout},
     {"uptime", cmd_uptime},
+    {"echo", cmd_echo},
     {"reboot", cmd_reboot},
 };
 
