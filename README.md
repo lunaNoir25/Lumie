@@ -54,7 +54,7 @@ That said, if you only want the ISO, simply run 'make' and a generated ISO file 
 > x86_64-elf-gcc must be installed in your system's PATH.
 > The Makefile assumes the OVMF files are in a specific directory, if they're installed in another directory,
 > change the lines under 'run: iso' in the Makefile to point to your OVMF files.
-> If you do not know how to do this... ¯\\_(ツ)_/¯
+> If you do not know how to do this... ¯\\\_(ツ)\_/¯
 
 ## Third-Party Assets
 
