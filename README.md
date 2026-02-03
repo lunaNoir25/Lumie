@@ -50,7 +50,7 @@ The following features are required to build Lumie:
  * QEMU (qemu-system-x86_64) - Emulator to test Lumie
 
 The source code provides a simple './run.sh' file that uses QEMU to run, and cleaned immediately after use.
-That said, if you only want the ISO, simply run 'make' and a generated ISO file will appear in the root folder.
+That said, if you only want the ISO, simply run 'make iso' and a generated ISO file will appear in the root folder.
 
 > [!Important]
 > x86_64-elf-gcc must be installed in your system's PATH.
