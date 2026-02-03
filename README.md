@@ -1,5 +1,7 @@
 # The Luminous Operating System
 
+<sup><i>**L**umie's **N**ot **U**nix.</i></sup>
+
 Lumie 0.1.0
 Copyright (C) 2026 Luna Moonlit Noir <lunaNoir.sk@gmail.com>
 
