@@ -3,8 +3,9 @@
 ## The Philosophy
 
 As of now, Lumie feels like a workstation in the late 70s to early 80s, but on modern 64-bit UEFI hardware.
- * Keep it simple: If a feature can be implemented in a straightforward "manual" way, we prefer that over heavy abstractions (for now).
- * Stay Focused: We aren't trying to beat Linux, Mac or that other operating system I refuse to name (:3), Lumie is a fun, minimal system to prove that major (potentially) operating systems can still be made to this day with enough support and dedication. No more hobby OSs!
+
+* Keep it simple: If a feature can be implemented in a straightforward "manual" way, we prefer that over heavy abstractions (for now).
+* Stay Focused: We aren't trying to beat Linux, Mac or that other operating system I refuse to name (:3), Lumie is a fun, minimal system to prove that major (potentially) operating systems can still be made to this day with enough support and dedication. No more hobby OSs!
 
 ## How to help?
 
@@ -15,8 +16,8 @@ For ideas, look at the issues page, the discussions page, current limitations or
 
 ## Code Style
 
- * Keep it clean: Use standard C11 (ISO/IEC 9899:2011) and follow the existing directory structure.
- * No bloat: Every byte counts to aim for a minimal approach.
+* Keep it clean: Use standard C11 (ISO/IEC 9899:2011) and follow the existing directory structure.
+* No bloat: Every byte counts to aim for a minimal approach.
 
 ## Submission Process
 

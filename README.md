@@ -1,3 +1,5 @@
+![Banner](./assets/LumieFull.png)
+
 # The Luminous Operating System
 
 <sup><i>**L**umie's **N**ot **U**nix.</i></sup>
@@ -19,35 +21,36 @@ Lumie appears to be in the late 70s to early 80s, but 64-bit UEFI.
 
 ## Current Features
 
- * Limine Protocol - Boot Implementation
- * FAT12/16 support - Direct-to-disk file reading.
- * Unix-like Minimal Shell - Simple command line with 'ls', 'cat', 'uptime', etc..
- * Custom Graphics - Coloured text support and uses the Spleen font.
+* Limine Protocol - Boot Implementation
+* FAT12/16 support - Direct-to-disk file reading.
+* Unix-like Minimal Shell - Simple command line with 'ls', 'cat', 'uptime', etc..
+* Custom Graphics - Coloured text support and uses the Spleen font.
 
 ## Current Limitations
 
- * Legacy BIOS - Lumie only supports 64-bit UEFI with no plans for Legacy BIOS support in the near future.
- * PS/2 Emulation - Lumie does not have a USB driver, PS/2 emulation is required to test on real hardware.
- * Virtual File System - There is no VFS, meaning Lumie doesn't follow the Linux Filesystem Hierarchy Standard, but will once a VFS is implemented.
- * User Space - Lumie is very minimal right now, and does not provide a user space.
- * Read Only - Lumie currently has no way to write files, only read.
- * Flat Directory Structure - Limited to only the root folder, directories are not yet supported.
- * Single-Sector Reads - Lumie assumes files fit in one 512-byte sector. It cannot read files larger than that.
+* Legacy BIOS - Lumie only supports 64-bit UEFI with no plans for Legacy BIOS support in the near future.
+* PS/2 Emulation - Lumie does not have a USB driver, PS/2 emulation is required to test on real hardware.
+* Virtual File System - There is no VFS, meaning Lumie doesn't follow the Linux Filesystem Hierarchy Standard, but will once a VFS is implemented.
+* User Space - Lumie is very minimal right now, and does not provide a user space.
+* Read Only - Lumie currently has no way to write files, only read.
+* Flat Directory Structure - Limited to only the root folder, directories are not yet supported.
+* Single-Sector Reads - Lumie assumes files fit in one 512-byte sector. It cannot read files larger than that.
 
 ## Build Instructions
 
 > These build instructions assume you are using Linux.
 
 The following features are required to build Lumie:
- * x86_64-elf-gcc - Cross Compiler
- * nasm - Assembler
- * objcopy - Part of binutils; required for the font
- * GNU make - For make commands
- * tar - For initramfs directory
- * xoriso - To create the ISO file
- * Limine - Bootloader
- * OVMF (Open Virtual Machine Firmware) - UEFI firmware files for QEMU
- * QEMU (qemu-system-x86_64) - Emulator to test Lumie
+
+* x86_64-elf-gcc - Cross Compiler
+* nasm - Assembler
+* objcopy - Part of binutils; required for the font
+* GNU make - For make commands
+* tar - For initramfs directory
+* xoriso - To create the ISO file
+* Limine - Bootloader
+* OVMF (Open Virtual Machine Firmware) - UEFI firmware files for QEMU
+* QEMU (qemu-system-x86_64) - Emulator to test Lumie
 
 The source code provides a simple './run.sh' file that uses QEMU to run, and cleaned immediately after use.
 That said, if you only want the ISO, simply run 'make iso' and a generated ISO file will appear in the root folder.
@@ -60,5 +63,5 @@ That said, if you only want the ISO, simply run 'make iso' and a generated ISO f
 
 ## Third-Party Assets
 
-- The default font is Spleen 8x16 by Frederic Cambus under the BSD 2-Clause License. <https://github.com/fcambus/spleen>
-- Lumie utilizes the Limine Bootloader and follows the Limine Protocol for kernel initialization and booting under the BSD 2-Clause License. Limine is made by Mintsuki. <https://codeberg.org/Limine/Limine>
+* The default font is Spleen 8x16 by Frederic Cambus under the BSD 2-Clause License. <https://github.com/fcambus/spleen>
+* Lumie utilizes the Limine Bootloader and follows the Limine Protocol for kernel initialization and booting under the BSD 2-Clause License. Limine is made by Mintsuki. <https://codeberg.org/Limine/Limine>
